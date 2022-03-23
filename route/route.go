@@ -4,8 +4,9 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/paudelgaurav/gin-gorm-transaction/controller"
+	"github.com/paudelgaurav/gin-gorm-transaction/repository"
 	"github.com/paudelgaurav/gin-gorm-transaction/service"
-	"github.com/paudelgaurav/go-repo/repository"
 	"gorm.io/gorm"
 )
 
@@ -20,4 +21,10 @@ func SetUpRoute(db *gorm.DB) {
 
 	userService := service.NewUserService(userRepository)
 
+	userController := controller.NewUserController(userService)
+
+	users := httpRouter.Group("users")
+	users.POST("/", userController.AddUser)
+
+	httpRouter.Run()
 }
