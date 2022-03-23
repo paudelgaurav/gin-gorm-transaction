@@ -25,6 +25,8 @@ func SetUpRoute(db *gorm.DB) {
 
 	users := httpRouter.Group("users")
 	users.POST("/", userController.AddUser)
+	users.GET("/", userController.GetAllUsers)
+	users.GET("/:id", userController.GetUser)
 
 	httpRouter.Run()
 }

@@ -13,6 +13,8 @@ type userRepository struct {
 
 type UserRepository interface {
 	Save(model.User) (model.User, error)
+	GetAllUsers() ([]model.User, error)
+	GetUser(int) (model.User, error)
 	Migrate() error
 }
 
@@ -25,6 +27,18 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 func (u userRepository) Save(user model.User) (model.User, error) {
 	log.Print("[UserRepository]...Save")
 	err := u.DB.Create(&user).Error
+	return user, err
+}
+
+func (u userRepository) GetAllUsers() (users []model.User, err error) {
+	log.Print("[User Repository]... Get All users")
+	err = u.DB.Find(&users).Error
+	return users, err
+}
+
+func (u userRepository) GetUser(userID int) (user model.User, err error) {
+	log.Print("[User Repository].. Get User")
+	err = u.DB.First(&user, uint(userID)).Error
 	return user, err
 }
 
