@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/jinzhu/gorm/dialects/mysql"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -29,5 +28,5 @@ func DBConnection() (*gorm.DB, error) {
 	)
 	url := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", USER, PASS, HOST, PORT, DBNAME)
 
-	return gorm.Open(mysql.Open(url)), &gorm.Config{Logger: newLogger}
+	return gorm.Open(mysql.Open(url), &gorm.Config{Logger: newLogger})
 }

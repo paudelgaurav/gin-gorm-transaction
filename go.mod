@@ -1,3 +1,3 @@
-module github.com/paudelgaurav/go-repo
+module github.com/paudelgaurav/gin-gorm-transaction
 
 go 1.17

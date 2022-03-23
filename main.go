@@ -1,8 +1,8 @@
 package main
 
-import "github.com/paudelgaurav/go-repo/models"
+import "github.com/paudelgaurav/gin-gorm-transaction/model"
 
 func main() {
 
-	db, _ = models.DBConnection()
+	db, _ := model.DBConnection()
 }

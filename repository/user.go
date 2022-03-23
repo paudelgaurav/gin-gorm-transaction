@@ -3,7 +3,7 @@ package repository
 import (
 	"log"
 
-	"github.com/paudelgaurav/go-repo/models"
+	"github.com/paudelgaurav/gin-gorm-transaction/model"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +12,7 @@ type userRepository struct {
 }
 
 type UserRepository interface {
-	Save(models.User) (models.User, error)
+	Save(model.User) (model.User, error)
 	Migrate() error
 }
 
@@ -22,7 +22,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	}
 }
 
-func (u userRepository) Save(user models.User) (models.User, error) {
+func (u userRepository) Save(user model.User) (model.User, error) {
 	log.Print("[UserRepository]...Save")
 	err := u.DB.Create(&user).Error
 	return user, err
@@ -30,5 +30,5 @@ func (u userRepository) Save(user models.User) (models.User, error) {
 
 func (u userRepository) Migrate() error {
 	log.Print("[UserRepository]..migrate")
-	return u.DB.AutoMigrate(&models.User{})
+	return u.DB.AutoMigrate(&model.User{})
 }
