@@ -1,18 +1,21 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/paudelgaurav/gin-gorm-transaction/model"
 	"github.com/paudelgaurav/gin-gorm-transaction/service"
+	"gorm.io/gorm"
 )
 
 type UserController interface {
 	AddUser(*gin.Context)
 	GetAllUsers(*gin.Context)
 	GetUser(*gin.Context)
+	TranserMoney(*gin.Context)
 }
 
 type userController struct {
@@ -59,4 +62,35 @@ func (u userController) GetUser(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{"data": user})
+}
+
+func (u userController) TranserMoney(ctx *gin.Context) {
+	log.Print("[UserController]...get all Users")
+
+	txHandle := ctx.MustGet("db_trx").(*gorm.DB)
+	var moneytransfer model.MoneyTransfer
+
+	if err := ctx.ShouldBindJSON(&moneytransfer); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"erorr": err.Error()})
+		return
+	}
+
+	if err := u.userService.WithTrx(txHandle).IncrementMoney(moneytransfer.Receiver, moneytransfer.Amount); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Error while incrementing money"})
+		txHandle.Rollback()
+		return
+	}
+
+	if err := u.userService.WithTrx(txHandle).DecrementMoney(moneytransfer.Giver, moneytransfer.Amount); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Error while decrementing money"})
+		txHandle.Rollback()
+		return
+	}
+
+	if err := txHandle.Commit().Error; err != nil {
+		log.Print("Trx commit error")
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"detail": "Money transfer successful"})
+
 }

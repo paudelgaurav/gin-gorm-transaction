@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/paudelgaurav/gin-gorm-transaction/controller"
+	"github.com/paudelgaurav/gin-gorm-transaction/middleware"
 	"github.com/paudelgaurav/gin-gorm-transaction/repository"
 	"github.com/paudelgaurav/gin-gorm-transaction/service"
 	"gorm.io/gorm"
@@ -27,6 +28,8 @@ func SetUpRoute(db *gorm.DB) {
 	users.POST("/", userController.AddUser)
 	users.GET("/", userController.GetAllUsers)
 	users.GET("/:id", userController.GetUser)
+
+	httpRouter.POST("/transer-money", middleware.DBTransactionMiddleware(db), userCont)
 
 	httpRouter.Run()
 }
