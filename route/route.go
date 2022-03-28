@@ -29,7 +29,7 @@ func SetUpRoute(db *gorm.DB) {
 	users.GET("/", userController.GetAllUsers)
 	users.GET("/:id", userController.GetUser)
 
-	httpRouter.POST("/transer-money", middleware.DBTransactionMiddleware(db), userCont)
+	httpRouter.POST("/transer-money", middleware.DBTransactionMiddleware(db), userController.TranserMoney)
 
 	httpRouter.Run()
 }
